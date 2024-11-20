@@ -11,7 +11,10 @@ Builder gameStartup = new Builder()
 	.ConfigureFonts("Content/CHUNKY.json")
 	;
 
+
 Game.Create(gameStartup);
 Game.Instance.DefaultFontSize = IFont.Sizes.Four;
+Game.Instance.Keyboard.RepeatDelay = float.PositiveInfinity;
+Game.Instance.Keyboard.InitialRepeatDelay = float.PositiveInfinity;
 Game.Instance.Run();
 Game.Instance.Dispose();
