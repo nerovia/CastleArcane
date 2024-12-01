@@ -33,8 +33,8 @@ internal class InputComponent(KeyBindings keys) : UpdateComponent, IInputProvide
 		state.Direction = Point.Zero;
 		HandleStick(keys.LeftKey, ref state.Direction, new(-1, 0));
 		HandleStick(keys.RightKey, ref state.Direction, new(1, 0));
-		HandleStick(keys.JumpKey, ref state.Direction, new(0, 1));
-		HandleStick(Keys.Down, ref state.Direction, new(0, -1));
+		HandleStick(keys.JumpKey, ref state.Direction, new(0, -1));
+		HandleStick(Keys.Down, ref state.Direction, new(0, 1));
 		HandleTrigger(keys.AttackKey, ref state.Attack, Attacked);
 		HandleTrigger(keys.JumpKey, Jumped);
 	}

@@ -12,57 +12,40 @@ namespace CastleArcane.Entities
 {
     internal class PlayerEntity : RigidEntity
 	{
-		readonly WackyKinematics _kinematics;
-		readonly IInputProvider _input;
+		readonly Stepper _stepX;
+		readonly Stepper _stepY;
+		readonly InputComponent _input;
 
 		public PlayerEntity(AnimatedScreenObject appearance) : base(appearance)
 		{
-			_kinematics = new WackyKinematics() { MaxSpeedX = 0.5f, MaxSpeedY = 0.5f };
 			_input = new InputComponent(GameSettings.KeyBindings);
-			SadComponents.Add((InputComponent)_input);
-			SadComponents.Add(_kinematics);
-			_input.Jumped += () =>
-			{
-				_kinematics.VelocityY = 0.625f;
-			};
-			_kinematics.Stepping += (s, e) =>
-			{
-				Debug.WriteLine(e.Step.Counter);
-				var host = (s as WackyKinematics).SingleHost!;
+			_stepX = new Stepper() { PrimaryInterval = 8, SecondaryInterval = 4, Threshold = 3 };
+			//_stepY= new Stepper() { PrimaryInterval = 8, SecondaryInterval = 4, Threshold = 3 };
 
-				void SpawnParticle(string key)
-				{
-					Scene.Spawn(host.AnchorPosition, new ParticleEntity(GlobalHelper.CurrentSpriteMap.GetGlyph(key)));
-				}
-
-
-				switch (e.Step.Direction)
-				{
-					case Direction.Types.Left:
-						host.AppearanceSurface!.Animation.CurrentFrameIndex = 1;
-						SpawnParticle(e.Step.Counter == 1 ? "gust-l" : "gust-h");
-						break;
-
-					case Direction.Types.Right:
-						host.AppearanceSurface!.Animation.CurrentFrameIndex = 0;
-						SpawnParticle(e.Step.Counter == 1 ? "gust-r" : "gust-h");
-						break;
-
-					case Direction.Types.Up:
-						SpawnParticle(e.Step.Counter == 1 ? "gust-u" : "gust-v");
-						break;
-
-				}
-			};
-			_kinematics.AccelerateY(-0.125f, false);
+			SadComponents.Add(_input);
+			SadComponents.Add(_stepX);
+			//SadComponents.Add(_stepY);
 		}
 
 		public override void Update(TimeSpan delta)
 		{
 			base.Update(delta);
 
-			_kinematics.VelocityX = _input.InputState.Direction.X * 0.125f;
-			
+			_stepX.Direction = Direction.GetCardinalDirection(_input.InputState.Direction);
+
+			//_stepX.Direction = _input.InputState.Direction.X switch
+			//{
+			//	> 0 => Direction.Right,
+			//	0 => Direction.None,
+			//	< 0 => Direction.Left
+			//};
+
+			//_stepY.Direction = _input.InputState.Direction.Y switch
+			//{
+			//	> 0 => Direction.Up,
+			//	0 => Direction.None,
+			//	< 0 => Direction.Down
+			//};
 
 		}
 	}

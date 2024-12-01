@@ -30,5 +30,15 @@ namespace CastleArcane.Entities
 			Anchor = Point.Zero;
 			Bounds = new Rectangle(0, 0, 1, 1);
 		}
+
+		public bool TryMove(Direction.Types direction)
+		{
+			if (Scene!.CanMove(this, direction, out Point pos))
+			{
+				Position = pos;
+				return true;
+			}
+			return false;
+		}
 	}
 }
